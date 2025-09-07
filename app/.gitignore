@@ -1,1 +1,22 @@
 /build
+# Gradle
+.gradle/
+
+# Local configuration
+/local.properties
+
+# Log/OS files
+*.log
+
+# Android Studio
+.idea/
+*.iml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Others
+captures/
+.externalNativeBuild/
+.cxx/
