@@ -1,4 +1,5 @@
-package com.example.cartao.model
+package com.example.meucartaodevisitas.model
+
 
 data class Project(
     val id: Int,
