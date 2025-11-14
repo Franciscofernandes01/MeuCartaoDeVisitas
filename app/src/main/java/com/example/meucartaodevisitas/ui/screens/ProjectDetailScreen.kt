@@ -1,24 +1,55 @@
 package com.example.meucartaodevisitas.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.meucartaodevisitas.model.ProjectsRepository
+import com.example.meucartaodevisitas.viewmodel.ProjectsViewModel
 
 @Composable
-fun ProjectDetailScreen(projectId: Int) {
-    val project = ProjectsRepository.findById(projectId)
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        if (project == null) {
-            Text("Projeto não encontrado (id = $projectId)")
-        } else {
-            Text(text = "ID: ${project.id}")
-            Text(text = "Nome: ${project.name}")
-            Text(text = "Descrição: ${project.description}")
+fun ProjectDetailScreen(
+    projectId: Long,
+    viewModel: ProjectsViewModel
+) {
+    val projects by viewModel.projects.collectAsState()
+
+    // Tenta encontrar o projeto na lista
+    val project = projects.firstOrNull { it.id == projectId }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        when {
+            projects.isEmpty() -> {
+                Text("Carregando...", style = MaterialTheme.typography.titleMedium)
+                CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+            }
+
+            project == null -> {
+                Text(
+                    "Projeto não encontrado (id = $projectId)",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            else -> {
+                Text("ID: ${project.id}", style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(8.dp))
+
+                Text("Nome: ${project.name}", style = MaterialTheme.typography.bodyLarge)
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    "Descrição: ${project.description ?: "Sem descrição"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
