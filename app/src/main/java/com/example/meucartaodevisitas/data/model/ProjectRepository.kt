@@ -9,16 +9,13 @@ import kotlinx.coroutines.withContext
 
 class ProjectRepository(
     private val dao: ProjectDao,
-    private val apiUser: String // passe o username do GitHub aqui ao instanciar
-
+    private val apiUser: String
 ) {
     private val api = RetrofitClient.create()
 
-    fun getProjectById(id: Long): Flow<Project?> {
-        return dao.getProjectById(id)
-    }
-
     fun getProjectsFlow(): Flow<List<Project>> = dao.getAll()
+
+    fun getProjectByIdFlow(id: Long): Flow<Project?> = dao.getById(id)
 
     suspend fun refreshFromNetwork() {
         withContext(Dispatchers.IO) {
@@ -35,4 +32,3 @@ class ProjectRepository(
         }
     }
 }
-

@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-// DTO para resposta do GitHub (campos mínimos)
 data class RepoDto(
     val id: Long,
     val name: String,

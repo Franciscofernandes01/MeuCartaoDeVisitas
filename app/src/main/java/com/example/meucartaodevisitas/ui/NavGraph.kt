@@ -1,56 +1,43 @@
-package com.example.meucartaodevisitas.navigation
+package com.example.meucartaodevisitas.ui
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.meucartaodevisitas.data.model.ProjectRepository
-import com.example.meucartaodevisitas.ui.screens.ProjectDetailScreen
-import com.example.meucartaodevisitas.ui.screens.ProjectListScreen
 import com.example.meucartaodevisitas.viewmodel.ProjectsViewModel
-
-object Routes {
-    const val PROJECT_LIST = "project_list"
-    const val PROJECT_DETAIL = "project_detail"
-}
+import com.example.meucartaodevisitas.ui.screens.*
 
 @Composable
-fun NavGraph(
-    repository: ProjectRepository,
-    viewModel: ProjectsViewModel
-) {
-    val navController = rememberNavController()
+fun AppNavGraph(navController: NavHostController, viewModel: ProjectsViewModel) {
 
     NavHost(
         navController = navController,
-        startDestination = Routes.PROJECT_LIST
+        startDestination = "home"
     ) {
 
-        // LISTA DE PROJETOS
-        composable(Routes.PROJECT_LIST) {
-            ProjectListScreen(
-                viewModel = viewModel,
-                onProjectClick = { projectId ->
-                    navController.navigate("${Routes.PROJECT_DETAIL}/$projectId")
+        composable("home") {
+            HomeScreen(
+                onNavigateToProjects = {
+                    navController.navigate("projects")
                 }
             )
         }
 
-        // DETALHE DO PROJETO
-        composable(
-            route = "${Routes.PROJECT_DETAIL}/{projectId}",
-            arguments = listOf(
-                navArgument("projectId") { type = NavType.LongType }
+        composable("projects") {
+            ProjectListScreen(
+                viewModel = viewModel,
+                onProjectClick = { id ->
+                    navController.navigate("detail/$id")
+                }
             )
-        ) { backStackEntry ->
+        }
 
-            val id = backStackEntry.arguments?.getLong("projectId") ?: 0L
-
+        composable("detail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")!!.toLong()
             ProjectDetailScreen(
                 projectId = id,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
     }

@@ -6,24 +6,24 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.meucartaodevisitas.data.model.Project
 
-@Database(entities = [Project::class], version = 1, exportSchema = false)
+@Database(entities = [Project::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun projectDao(): ProjectDao
 
     companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
+        @Volatile private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
+        fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                val inst = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "meu_cartao_db"
-                ).build()
-                INSTANCE = instance
-                instance
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = inst
+                inst
             }
         }
     }

@@ -67,7 +67,7 @@ dependencies {
 
     // Lifecycle / ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
@@ -90,6 +90,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
 
+    // Compose / Navigation / Material3 (veja versões do seu projeto)
+    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.compose.material3:material3:1.1.0")
 
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
 
 }

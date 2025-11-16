@@ -12,13 +12,12 @@ interface ProjectDao {
     @Query("SELECT * FROM projects ORDER BY name")
     fun getAll(): Flow<List<Project>>
 
-    @Query("SELECT * FROM projects WHERE id = :id LIMIT 1")
-    fun getProjectById(id: Long): Flow<Project?>
-
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(projects: List<Project>)
 
     @Query("DELETE FROM projects")
     suspend fun clearAll()
+
+    @Query("SELECT * FROM projects WHERE id = :id LIMIT 1")
+    fun getById(id: Long): Flow<Project?>
 }

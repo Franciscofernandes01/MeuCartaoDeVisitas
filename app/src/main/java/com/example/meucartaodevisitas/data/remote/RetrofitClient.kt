@@ -17,7 +17,7 @@ object RetrofitClient {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BASE_URL) // IMPORTANTE: termina com '/'
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

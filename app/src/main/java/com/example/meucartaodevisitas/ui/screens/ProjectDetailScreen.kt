@@ -1,54 +1,62 @@
 package com.example.meucartaodevisitas.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.example.meucartaodevisitas.viewmodel.ProjectsViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectDetailScreen(
     projectId: Long,
-    viewModel: ProjectsViewModel
+    viewModel: ProjectsViewModel,
+    onBack: () -> Unit
 ) {
-    val projects by viewModel.projects.collectAsState()
+    val project by viewModel.getProjectById(projectId).collectAsState(initial = null)
+    val uriHandler = LocalUriHandler.current
 
-    // Tenta encontrar o projeto na lista
-    val project = projects.firstOrNull { it.id == projectId }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Detalhes") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .padding(padding)
+        ) {
+            when {
+                project == null -> {
+                    Text("Carregando...")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CircularProgressIndicator()
+                }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-
-        when {
-            projects.isEmpty() -> {
-                Text("Carregando...", style = MaterialTheme.typography.titleMedium)
-                CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
-            }
-
-            project == null -> {
-                Text(
-                    "Projeto não encontrado (id = $projectId)",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            else -> {
-                Text("ID: ${project.id}", style = MaterialTheme.typography.titleMedium)
-                Spacer(Modifier.height(8.dp))
-
-                Text("Nome: ${project.name}", style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.height(8.dp))
-
-                Text(
-                    "Descrição: ${project.description ?: "Sem descrição"}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                else -> {
+                    Text(text = project!!.name, style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = project!!.description ?: "Sem descrição")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { uriHandler.openUri(project!!.htmlUrl) }) {
+                        Text("Abrir no GitHub")
+                    }
+                }
             }
         }
     }
